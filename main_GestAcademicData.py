@@ -1,3 +1,8 @@
+#NOME: Gabriel Soares de Menezes
+#RA: 112023100378
+#Curso: Análise e desenvolvimento de sistemas
+#Em Desenvolvimento
+#GITHUB: https://github.com/GabrielMenezes98/ATP-Raciocinio_Comp
 
 #MENU PRINCIPAL
 op = int
@@ -36,7 +41,7 @@ while  op != 9:
                 print ("Você selecionou listar.")
                 
             elif subop == 3:
-                print ("Você selecionou atualizar.")
+                print ("Em desenvolvimento")
                 
             elif subop == 4:
                 print ("Você selecionou excluir.")
@@ -45,7 +50,7 @@ while  op != 9:
                 print("Opção inválida")
         
         
-             
+            
         
 #Menu de gerenciar professores
     elif op == 2:
