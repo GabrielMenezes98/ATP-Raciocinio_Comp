@@ -1,15 +1,12 @@
 #NOME: Gabriel Soares de Menezes
 #RA: 112023100378
 #Curso: Análise e desenvolvimento de sistemas
+#GitHub: https://github.com/GabrielMenezes98/ATP-Raciocinio_Comp
 
-#VARIAVEIS GLOBAIS
-#lista_estudantes = []
-#lista_professores = []
 import json
 
-###########  CARREGA DADOS DO ARQUIVO EM ARMAZENAMENTO  ##############
-def carrega_dados():
-    
+##########  CARREGA DADOS DO ARQUIVO EM ARMAZENAMENTO  ##########
+def carrega_dados():    
     if op == 1:
         try:
             with open('dados_estudantes.json','r',encoding='utf8') as f:
@@ -37,7 +34,8 @@ def carrega_dados():
             dados_disciplinas = []
         return dados_disciplinas
 
-################ GRAVA DADOS NO ARQUIVO EM ARMAZENAMENTO ###############
+
+##########  GRAVA DADOS NO ARQUIVO EM ARMAZENAMENTO  ##########
 def registra_dados(dados_estudantes, dados_professores):
     if op == 1:
         with open('dados_estudantes.json','w',encoding='utf8') as f:
@@ -48,7 +46,7 @@ def registra_dados(dados_estudantes, dados_professores):
             json.dump(dados_professores,f, ensure_ascii=False)
 
 
-#########  INSERE DADOS NO ARQUIVO #########################
+##########  INSERE DADOS NO ARQUIVO  ##########
 def inserir(op, dados_estudantes, dados_professores):
     if op == 1:
         while True:
@@ -59,6 +57,7 @@ def inserir(op, dados_estudantes, dados_professores):
             dados_estudantes.append(infoestudante)
             if input("Deseja inserir outro estudante?(s/n): ") == "n":
                 break
+
     elif op == 2:
         while True:
             codigo = int(input("Insira o código do professor: "))
@@ -66,11 +65,11 @@ def inserir(op, dados_estudantes, dados_professores):
             cpf =input("Insira o CPF: ")
             infoprofessor = {"Código":codigo,"Nome":nome,"CPF":cpf}
             dados_professores.append(infoprofessor)
-            if input("Deseja inserir outro estudante?(s/n) ") == "n":
+            if input("Deseja inserir outro professor?(s/n) ") == "n":
                 break
         
 
-############  FUNÇÃO PARA LISTAGEM DE ESTUDANTES  #################
+##########  FUNÇÃO PARA LISTAGEM DE ESTUDANTES  ##########
 def listar_estudantes(dados_estudantes):
     dados_estudantes = carrega_dados()
     if len(dados_estudantes) == 0:
@@ -81,7 +80,32 @@ def listar_estudantes(dados_estudantes):
         for estudante in dados_estudantes:
             print(estudante)
 
-############ FUNÇÃO PARA LISTAGEM DE PROFESSORES
+
+##########  FUNÇÃO PARA ATUALIZAR ESTUDANTES  ##########
+def atualizar_estudante(dados_estudantes,dados_professores):
+    codigo_att = int(input("Qual o código do estudante que deseja alterar?: "))
+    novo_nome = input("Insira o nome: ")
+    novo_cpf = input("Insira o CPF: ")
+    #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
+    for estudante in dados_estudantes:
+    #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+        if estudante['Código'] == codigo_att:
+            estudante['Nome'] = novo_nome
+            estudante['CPF'] = novo_cpf
+            registra_dados(dados_estudantes,dados_professores)
+    
+
+##########  FUNÇÃO PARA EXCLUIR ESTUDANTES  ##########
+def excluir_estudante(dados_estudantes,dados_professores):
+    #Percorre a lista de estudantes em busca do código copiado
+    codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
+    for index, estudante in enumerate(dados_estudantes):
+        if estudante['Código'] == codigo_exclusao:
+            dados_estudantes.pop(index)
+            registra_dados(dados_estudantes, dados_professores)
+
+
+##########  FUNÇÃO PARA LISTAGEM DE PROFESSORES  ##########
 def listar_professores(dados_professores):
     dados_professores = carrega_dados()
     if len(dados_professores) == 0:
@@ -92,37 +116,37 @@ def listar_professores(dados_professores):
         for professor in dados_professores:
             print(professor)
 
-########   FUNÇÃO PARA ATUALIZAR CADASTROS  ###############
-def atualizar_estudante(lista_estudantes, codigo_atualizacao, novo_estudante):
+
+##########  FUNÇÃO PARA ATUALIZAR PROFESSORES ##########
+def atualizar_professores(dados_estudantes,dados_professores):
+    codigo_att = int(input("Qual o código do professor que deseja alterar?: "))
+    novo_nome = input("Insira o nome: ")
+    novo_cpf = input("Insira o CPF: ")
     #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-    for i, estudante in enumerate(lista_estudantes):
-        if estudante[0] == codigo_atualizacao: 
-            #SUBSTITUI O ESTUDANTE ANTERIOR PELO NOVO ESTUDANTE
-            lista_estudantes[i] = novo_estudante
-            #RETORNA A LISTA ATUALIZADA
-            return lista_estudantes
-    #CASO O CÓDIGO NÃO SEJA ENCONTRADO, RETORNA A LISTA ORIGINAL
-    return lista_estudantes
+    for professor in dados_professores:
+    #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+        if professor['Código'] == codigo_att:
+            professor['Nome'] = novo_nome
+            professor['CPF'] = novo_cpf
+            registra_dados(dados_estudantes,dados_professores)
 
 
-#####   FUNÇÃO PARA EXCLUIR CADASTROS  ##############
-def excluir_estudante(lista_estudantes, indice_exclusao):
+##########  FUNÇÃO PARA EXCLUIR PROFESSORES  ##########
+def excluir_professores(dados_estudantes,dados_professores):
     #Percorre a lista de estudantes em busca do código copiado
-    for i, estudante in enumerate(lista_estudantes):  
-        if estudante[0] == indice_exclusao:
-            #remove a TUPLA da LISTA de estudantes
-            del lista_estudantes[i]
-            #retorna a lista de estudantes atualizada
-            return lista_estudantes
-    #caso não encontre o indice de exclusão, retorna a lista original
-    return lista_estudantes
-               
+    codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
+    for index, professor in enumerate(dados_professores):
+        if professor['Código'] == codigo_exclusao:
+            dados_professores.pop(index)
+            registra_dados(dados_estudantes, dados_professores)
 
-#####       AVISO DE DESENVOLVIMENTO   ##############
+
+##########  AVISO DE DESENVOLVIMENTO  ##########
 def em_desenvolvimento():
      print("Em desenvolvimento")
 
-#######   OPÇÕES DO MENU DE OPERAÇÕES   #############
+
+##########  OPÇÕES DO MENU DE OPERAÇÕES  ##########
 def opcoes_menu_operacoes():
     print("(1) Incluir.")  
     print("(2) Listar.")
@@ -131,7 +155,7 @@ def opcoes_menu_operacoes():
     print("(5) Voltar ao menu principal.")
 
 
-#########   MENU DE ESTUDANTES #############
+##########  MENU DE ESTUDANTES  ##########
 def menu_estudantes():
     subop = int
     while subop != 5:
@@ -145,25 +169,20 @@ def menu_estudantes():
             titulo_menu_estudantes()    
         
         elif retorno_menu == 2:
-            dados_estudantes = carrega_dados()
             listar_estudantes(dados_estudantes)
             titulo_menu_estudantes()
                 
         elif retorno_menu == 3: 
             titulo_menu_estudantes()
-            codigo_atualizacao = input("Qual o código do estudante que deseja atualizar? ")
-            nome = input("Insira o nome: ")
-            cpf = input("Insira o CPF: ")
-            novo_estudante = codigo_atualizacao, nome, cpf
-            atualizar_estudante(dados_estudantes, codigo_atualizacao, novo_estudante)
+            atualizar_estudante(dados_estudantes,dados_professores)
             
         elif retorno_menu == 4:
             titulo_menu_estudantes()
-            codigo_exclusao = (input("Qual o código do estudante que deseja excluir? "))
-            excluir_estudante(dados_estudantes, codigo_exclusao)
+            excluir_estudante(dados_estudantes, dados_professores)
             
         elif retorno_menu == 5:  
             subop = 5
+
 
 ########### MENU DE PROFESSORES ########### 
 def menu_professores():
@@ -176,30 +195,26 @@ def menu_professores():
         if retorno_menu == 1:
             inserir(op, dados_estudantes, dados_professores)
             registra_dados(dados_estudantes,dados_professores)
-            titulo_menu_estudantes()    
+            titulo_menu_professores()    
         
         elif retorno_menu == 2:
             dados_professores = carrega_dados()
             listar_professores(dados_professores)
-            titulo_menu_estudantes()
+            titulo_menu_professores()
                 
         elif retorno_menu == 3: 
-            titulo_menu_estudantes()
-            codigo_atualizacao = input("Qual o código do estudante que deseja atualizar? ")
-            nome = input("Insira o nome: ")
-            cpf = input("Insira o CPF: ")
-            novo_professor = codigo_atualizacao, nome, cpf
-            atualizar_estudante(dados_professores, codigo_atualizacao, novo_professor)
+            titulo_menu_professores()
+            atualizar_professores(dados_estudantes, dados_professores)
             
         elif retorno_menu == 4:
-            titulo_menu_estudantes()
-            codigo_exclusao = (input("Qual o código do estudante que deseja excluir? "))
-            excluir_estudante(dados_professores, codigo_exclusao)
+            titulo_menu_professores()
+            excluir_professores(dados_estudantes, dados_professores)
             
         elif retorno_menu == 5:  
             subop = 5
+
         
-###########  TITULOS   ################
+##########  TITULOS  ##########
 def titulo_menu_estudantes():
         print("***** [ESTUDANTES] MENU DE OPERAÇÕES *****")
 
@@ -216,37 +231,40 @@ def titulo_menu_matriculas():
         print("***** [MATRÍCULAS] MENU DE OPERAÇÕES *****")
 
 
-#MENU PRINCIPAL
-def menu_principal(op):
-    
+##########  MENU PRINCIPAL  ##########
+def menu_principal(op):    
     while True:
-        
         if op == 1:
             titulo_menu_estudantes()
             menu_estudantes()
             break
+
         elif op == 2: 
             titulo_menu_professores()
             menu_professores()
             break
+
         elif op == 3:
             titulo_menu_disciplinas()
             em_desenvolvimento()
             break
+
         elif op == 4:
             titulo_menu_turmas()
             em_desenvolvimento()
             break
+
         elif op == 5:
             titulo_menu_matriculas()
             em_desenvolvimento()
             break
+        
         else:
             print("SAINDO...")
             break
                 
 
-#PROGRAMÃO
+##########  PROGRAMA PRINCIPAL  ##########
 op = int      
 while op != 6:
     print("----- MENU PRINCIPAL -----")
