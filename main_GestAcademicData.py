@@ -51,6 +51,8 @@ def inserir(op, dados_estudantes, dados_professores):
     if op == 1:
         while True:
             codigo = int(input("Insira o código do estudante: "))
+            if valida_cod_estudante(codigo, dados_estudantes) == True:
+                continue
             nome = input("Insira o nome do estudante: ") 
             cpf = input("Insira o CPF: ")
             infoestudante = {"Código":codigo,"Nome":nome,"CPF":cpf}
@@ -61,6 +63,8 @@ def inserir(op, dados_estudantes, dados_professores):
     elif op == 2:
         while True:
             codigo = int(input("Insira o código do professor: "))
+            if valida_cod_professores(codigo, dados_professores):
+                continue
             nome = input("Insira o nome do professor: ")
             cpf =input("Insira o CPF: ")
             infoprofessor = {"Código":codigo,"Nome":nome,"CPF":cpf}
@@ -103,6 +107,16 @@ def excluir_estudante(dados_estudantes,dados_professores):
         if estudante['Código'] == codigo_exclusao:
             dados_estudantes.pop(index)
             registra_dados(dados_estudantes, dados_professores)
+            print("Estudante","*",estudante['Nome'],"*","foi excluido.")
+
+
+##########  VALIDA ESTUDANTES  ##########
+def valida_cod_estudante(codigo, dados_estudantes):
+    for estudante in dados_estudantes:
+        if codigo == estudante['Código']:
+            print("Este código já existe, tente novamente")
+            return True
+
 
 
 ##########  FUNÇÃO PARA LISTAGEM DE PROFESSORES  ##########
@@ -139,7 +153,16 @@ def excluir_professores(dados_estudantes,dados_professores):
         if professor['Código'] == codigo_exclusao:
             dados_professores.pop(index)
             registra_dados(dados_estudantes, dados_professores)
+            print("Professor","*",professor['Nome'],"*","foi excluido.")
 
+
+##########  VALIDA PROFESSORES  ##########
+def valida_cod_professores(codigo, dados_professores):
+    for professor in dados_professores:
+        if codigo == professor['Código']:
+            print("Este código já existe, tente novamente")
+            return True
+        
 
 ##########  AVISO DE DESENVOLVIMENTO  ##########
 def em_desenvolvimento():
@@ -157,8 +180,7 @@ def opcoes_menu_operacoes():
 
 ##########  MENU DE ESTUDANTES  ##########
 def menu_estudantes():
-    subop = int
-    while subop != 5:
+    while True:
         opcoes_menu_operacoes()
         retorno_menu = int(input())
         dados_estudantes = carrega_dados()
@@ -181,13 +203,16 @@ def menu_estudantes():
             excluir_estudante(dados_estudantes, dados_professores)
             
         elif retorno_menu == 5:  
-            subop = 5
+            break
+
+        else:
+            print("Opção inválida, tente novamente")
+            continue
 
 
 ########### MENU DE PROFESSORES ########### 
 def menu_professores():
-    subop = int
-    while subop != 5:
+    while True:
         opcoes_menu_operacoes()
         retorno_menu = int(input())
         dados_estudantes = carrega_dados()
@@ -211,7 +236,11 @@ def menu_professores():
             excluir_professores(dados_estudantes, dados_professores)
             
         elif retorno_menu == 5:  
-            subop = 5
+            break
+
+        else:
+            print("Opção inválida, tente novamente!")
+            continue
 
         
 ##########  TITULOS  ##########
@@ -261,12 +290,12 @@ def menu_principal(op):
         
         else:
             print("SAINDO...")
-            break
+            exit()
                 
 
 ##########  PROGRAMA PRINCIPAL  ##########
 op = int      
-while op != 6:
+while True:
     print("----- MENU PRINCIPAL -----")
     print("1 - Gerenciar estudantes. ")
     print("2 - Gerenciar professores.")
@@ -278,4 +307,6 @@ while op != 6:
     if 1 <= op <= 6:
         menu_principal(op)
     else:
-        print("Opção inválida") 
+        print("Opção inválida")
+        continue
+         
