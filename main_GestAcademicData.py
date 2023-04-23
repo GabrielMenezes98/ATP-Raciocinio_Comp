@@ -7,17 +7,17 @@
 #VARIAVEIS GLOBAIS
 lista_estudantes = []
 
-
-
 #Inclui estudantes (done)
-def inserir_estudantes():
-    qntd_estudantes = int(input("Quantos estudantes você deseja inserir?: "))
-    for _ in range(qntd_estudantes):
-        codigo = input("Insira o código do estudante: ")
-        nome = input("Insira o nome do estudante: ") 
-        cpf = input("Insira o CPF: ")
-        infoestudante = (codigo, nome, cpf)
-        lista_estudantes.append(infoestudante)
+def inserir(op):
+    if op == 1:
+        while True:
+            codigo = input("Insira o código do estudante: ")
+            nome = input("Insira o nome do estudante: ") 
+            cpf = input("Insira o CPF: ")
+            infoestudante = (codigo, nome, cpf)
+            lista_estudantes.append(infoestudante)
+            if input("Deseja inserir outro estudante?(s/n): ") == "n":
+                 break
         
 
 #FUNÇÃO PARA LISTAGEM
@@ -78,7 +78,7 @@ def menu_estudantes():
         retorno_menu = int(input())
         
         if retorno_menu == 1:
-            inserir_estudantes()
+            inserir(op)
             titulo_menu_estudantes()    
         elif retorno_menu == 2:
             listar_estudantes()
