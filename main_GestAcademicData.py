@@ -135,7 +135,11 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 5:
         while True:
-            insere_estudantes_e_turmas(dados_matriculas, dados_estudantes, dados_turmas)
+            indice_matricula = int(input("Insira o número da matrícula: "))
+            if valida_cod_matriculas(indice_matricula, dados_matriculas) == True:
+                print("Matrícula já existente, insira outro número.")
+                continue
+            insere_estudantes_e_turmas(dados_matriculas, dados_estudantes, dados_turmas, indice_matricula)
             registra_dados_matriculas(dados_matriculas)
             if input("Deseja inserir outra matrícula(s/n) ") == "n":
                 break
@@ -341,8 +345,7 @@ def valida_cod_turmas(n_turma, dados_turmas):
         
 
 ##########  INSERIR MATRICULAS  ##########
-def insere_estudantes_e_turmas(dados_matriculas,dados_estudantes, dados_turmas):
-    indice_matricula = int(input("Insira o número da matrícula: "))
+def insere_estudantes_e_turmas(dados_matriculas,dados_estudantes, dados_turmas, indice_matricula):
     cod_estudante = int(input("Insira o código do estudante: "))
     for estudante in dados_estudantes:
         if estudante['Código'] == cod_estudante:
@@ -398,8 +401,14 @@ def excluir_matriculas(dados_matriculas):
             if n_matricula == matricula['Matricula']:
                 dados_matriculas.pop(index)
                 registra_dados_matriculas(dados_matriculas)
-                
-                   
+
+
+##########  VALIDA CODIGO DA MATRÍCULA  ##########
+def valida_cod_matriculas(indice_matricula, dados_matriculas):
+    for matricula in dados_matriculas:
+        if indice_matricula == matricula['Matricula']:
+            return True
+
 ##########  MENU DE ESTUDANTES  ##########
 def menu_estudantes():
     while True:
