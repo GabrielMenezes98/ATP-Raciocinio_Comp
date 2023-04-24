@@ -456,6 +456,7 @@ def atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas):
     infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
     dados_turmas.append(infoturmas)
     registra_dados_turmas(dados_turmas)
+    print(f"A turma *{turma['Turma']}* foi atualizada.")
         
         
 ##########  EXCLUI TURMAS  #########
@@ -534,35 +535,80 @@ def listar_matriculas(dados_matriculas):
 
 ########## ATUALIZA MATRICULAS ##########
 def atualizar_matriculas(dados_matriculas, dados_estudantes, dados_turmas):
-    n_matricula = int(input("Insira o número da matricula que deseja atualizar: "))
-    for index, matricula in enumerate(dados_matriculas):
-        if n_matricula == matricula['Matricula']:
-            dados_matriculas.pop(index)
-            registra_dados_matriculas(dados_matriculas)
+    while True:
+        try:
+            n_matricula = int(input("Insira o número da matricula que deseja atualizar: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+            continue
+        if valida_cod_matriculas(n_matricula, dados_matriculas) == True:
+            for index, matricula in enumerate(dados_matriculas):
+                if n_matricula == matricula['Matricula']:
+                    dados_matriculas.pop(index)
+                    registra_dados_matriculas(dados_matriculas)
+        else:
+            print("Essa matrícula não existe, tente novamente.")
+            continue
+        break
     
-    cod_estudantes = int(input("Insira o código do estudante: "))        
-    for estudante in dados_estudantes:
-        if estudante['Código'] == cod_estudantes:
-            infoestud = estudante
-            
-    cod_turmas = int(input("Insira o código da turma: "))
-    for turma in dados_turmas:
-        if turma['Turma'] == cod_turmas:
-            infoturma = turma
-            
+    while True:
+        try:
+            cod_estudantes = int(input("Insira o código do estudante: "))        
+        
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_estudante(cod_estudantes, dados_estudantes) == True:
+            for estudante in dados_estudantes:
+                if estudante['Código'] == cod_estudantes:
+                    infoestud = estudante
+        else:
+            print("Esse estudante não existe, tente novamente")
+            continue
+        break
+    
+    while True:
+        try:     
+            cod_turmas = int(input("Insira o código da turma: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_turmas(cod_turmas, dados_turmas) == True:
+            for turma in dados_turmas:
+                if turma['Turma'] == cod_turmas:
+                    infoturma = turma
+        else:
+            print("Essa turma não existe, tente novamente.")
+            continue
+        break
+
     infomatricula = {"Matricula":n_matricula,"Estudante":infoestud,"Turma":infoturma}
     dados_matriculas.append(infomatricula)
     registra_dados_matriculas(dados_matriculas)
+    print(f"A matrícula {matricula['Matricula']} foi atualizada.")
 
 
 ##########  EXCLUI MATRÍCULA  ##########
 def excluir_matriculas(dados_matriculas):
-    n_matricula = int(input("Insira o número da matrícula que deseja excluir: "))
-    for matricula in dados_matriculas:
-        for index, matricula in enumerate(dados_matriculas):
-            if n_matricula == matricula['Matricula']:
-                dados_matriculas.pop(index)
-                registra_dados_matriculas(dados_matriculas)
+    while True:
+        try:
+            n_matricula = int(input("Insira o número da matrícula que deseja excluir: "))
+        
+        except:
+            print("Esse código não existe, tente novamente.")
+            continue
+
+        if valida_cod_matriculas(n_matricula,dados_matriculas) == True:
+            for matricula in dados_matriculas:
+                for index, matricula in enumerate(dados_matriculas):
+                    if n_matricula == matricula['Matricula']:
+                        dados_matriculas.pop(index)
+                        registra_dados_matriculas(dados_matriculas)
+                        print(f"A Matrícula {matricula} foi excluída.")
+        else:
+            print("Essa matrícula não existe, tente novamente.")
+            continue
+        break
 
 
 ##########  VALIDA CODIGO DA MATRÍCULA  ##########
