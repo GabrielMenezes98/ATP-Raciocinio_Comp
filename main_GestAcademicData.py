@@ -208,7 +208,7 @@ def atualizar_professores(dados_professores):
         if professor['Código'] == codigo_att:
             professor['Nome'] = novo_nome
             professor['CPF'] = novo_cpf
-            registra_dados_professores(dados_professores)
+            return dados_professores
 
 
 ##########  FUNÇÃO PARA EXCLUIR PROFESSORES  ##########
@@ -273,7 +273,7 @@ def valida_cod_disciplinas(codigo, dados_disciplinas):
             return True
         
 
-########## INSERE PROFESSORES EM TURMAS ##########
+########## INSERIR TURMAS ##########
 def insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados_disciplinas):
     cod_professor = int(input("Insira o código do professor: "))
     for professor in dados_professores:
@@ -288,6 +288,52 @@ def insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados
     infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
     dados_turmas.append(infoturmas)
 
+
+##########  LISTA TURMAS  ##########
+def listar_turmas(dados_turmas):
+    if len(dados_turmas) == 0:
+        print("A lista está vazia")
+
+    else:
+        print('********** LISTA DE TURMAS **********')
+        for turma in dados_turmas:
+            print(turma)
+
+
+########## ATUALIZA TURMAS  ##########
+def atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas):
+    dados_disciplinas = carrega_dados_disciplinas()
+    n_turma = int(input("Insira o número da turma que deseja atualizar: "))
+    for turma in dados_turmas:
+            for index, turma in enumerate(dados_turmas):
+                if n_turma == turma['Turma']:
+                    dados_turmas.pop(index)
+                    registra_dados_turmas(dados_turmas)
+
+            cod_professor = int(input("Insira o código do professor: "))
+            for professor in dados_professores:
+                if professor['Código'] == cod_professor:
+                    infoprof = professor
+            
+            cod_disciplina = int(input("Insira o código da disciplina: "))
+            for disciplina in dados_disciplinas:
+                if disciplina['Código'] == cod_disciplina:
+                    infodisc = disciplina
+            
+            infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
+            dados_turmas.append(infoturmas)
+            registra_dados_turmas(dados_turmas)
+        
+        
+##########  EXCLUI TURMAS  #########
+def excluir_turmas(dados_turmas):
+    n_turma = int(input("Insira o número da turma que deseja excluir: "))
+    for turma in dados_turmas:
+        for index, turma in enumerate(dados_turmas):
+            if n_turma == turma['Turma']:
+                dados_turmas.pop(index)
+                registra_dados_turmas(dados_turmas)         
+            
 ##########  VALIDA CODIGO DA TURMA  ##########
 def valida_cod_turmas(n_turma, dados_turmas):
     for turma in dados_turmas:
@@ -351,6 +397,7 @@ def menu_professores():
         elif retorno_menu == 3: 
             titulo_menu_professores()
             atualizar_professores(dados_professores)
+            registra_dados_professores(dados_professores)
             
         elif retorno_menu == 4:
             titulo_menu_professores()
@@ -410,12 +457,13 @@ def menu_turmas():
                 titulo_menu_turmas()    
             
             elif retorno_menu == 2:
-                listar_turmas()
+                listar_turmas(dados_turmas)
                 titulo_menu_turmas()
                     
             elif retorno_menu == 3: 
                 titulo_menu_turmas()
-                atualizar_turmas(dados_turmas)
+                atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas)
+                
                 
             elif retorno_menu == 4:
                 titulo_menu_turmas()
