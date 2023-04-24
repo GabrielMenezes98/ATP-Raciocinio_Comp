@@ -123,8 +123,11 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 4:
         while True:
-            codigo = int(input("Insira o código da turma: "))
-            insere_professores_em_turmas(dados_turmas, dados_professores)
+            n_turma = int(input("Insira o código da turma: "))
+            if valida_cod_turmas(n_turma, dados_turmas):
+                continue
+            insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados_disciplinas)
+            
             if input("Deseja inserir outra turma?(s/n) ") == "n":
                 break
 
@@ -271,14 +274,26 @@ def valida_cod_disciplinas(codigo, dados_disciplinas):
         
 
 ########## INSERE PROFESSORES EM TURMAS ##########
-def insere_professores_em_turmas(dados_turmas, dados_professores):
+def insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados_disciplinas):
     cod_professor = int(input("Insira o código do professor: "))
     for professor in dados_professores:
         if professor['Código'] == cod_professor:
-            infoturmas = {"Professor":professor}
-            dados_turmas.append(infoturmas)
-            print(dados_turmas)
+            infoprof = professor
+            
+    cod_disciplina = int(input("Insira o código da disciplina: "))
+    for disciplina in dados_disciplinas:
+        if disciplina['Código'] == cod_disciplina:
+            infodisc = disciplina
+            
+    infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
+    dados_turmas.append(infoturmas)
 
+##########  VALIDA CODIGO DA TURMA  ##########
+def valida_cod_turmas(n_turma, dados_turmas):
+    for turma in dados_turmas:
+        if n_turma == turma['Turma']:
+            print("Este código já existe, tente novamente")
+            return True
 
 ##########  AVISO DE DESENVOLVIMENTO  ##########
 def em_desenvolvimento():
@@ -386,6 +401,8 @@ def menu_turmas():
             opcoes_menu_operacoes()
             retorno_menu = int(input())
             dados_turmas = carrega_dados_turmas()
+            dados_professores = carrega_dados_professores()
+            dados_disciplinas = carrega_dados_disciplinas()
 
             if retorno_menu == 1:
                 inserir(op,dados_estudantes, dados_professores, dados_disciplinas, dados_turmas, dados_matriculas)
