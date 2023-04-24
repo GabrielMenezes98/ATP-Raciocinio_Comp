@@ -88,7 +88,11 @@ def registra_dados_matriculas(dados_matriculas):
 def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turmas, dados_matriculas):
     if op == 1:
         while True:
-            codigo = int(input("Insira o código do estudante: "))
+            try:
+                codigo = int(input("Insira o código do estudante: "))
+            except:
+                print("Código inválido, insira um valor númerico.")
+                continue
             if valida_cod_estudante(codigo, dados_estudantes) == True:
                 print("Este código já existe, tente novamente")
                 continue
@@ -101,8 +105,13 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 2:
         while True:
-            codigo = int(input("Insira o código do professor: "))
-            if valida_cod_professores(codigo, dados_professores):
+            try:
+                codigo = int(input("Insira o código do professor: "))
+            except:
+                print("Código inválido, insira um valor númerico.")
+                continue
+            if valida_cod_professores(codigo, dados_professores) == True:
+                print("Este código já existe, tente novamente")
                 continue
             nome = input("Insira o nome do professor: ")
             cpf =input("Insira o CPF: ")
@@ -113,8 +122,14 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
     
     elif op == 3:
         while True:
-            codigo = int(input("Insira o código da disciplina: "))
+            try:
+                codigo = int(input("Insira o código da disciplina: "))
+            
+            except:
+                print("Código inválido, insira um valor númerico.")
+                continue
             if valida_cod_disciplinas(codigo, dados_disciplinas):
+                print("Este código já existe, tente novamente")
                 continue
             nome = input("Insira o nome da disciplina: ")
             infodisciplina = {"Código":codigo,"Nome":nome}
@@ -124,7 +139,12 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 4:
         while True:
-            n_turma = int(input("Insira o código da turma: "))
+            try:
+                n_turma = int(input("Insira o código da turma: "))
+            
+            except:
+                print("Código inválido, insira um valor númerico.")
+                continue
             if valida_cod_turmas(n_turma, dados_turmas):
                 print("Este código já existe, tente novamente")
                 continue
@@ -135,7 +155,12 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 5:
         while True:
-            indice_matricula = int(input("Insira o número da matrícula: "))
+            try:
+                indice_matricula = int(input("Insira o número da matrícula: "))
+            
+            except:
+                print("Código inválido, insira um valor númerico.")
+                continue
             if valida_cod_matriculas(indice_matricula, dados_matriculas) == True:
                 print("Matrícula já existente, insira outro número.")
                 continue
@@ -158,27 +183,48 @@ def listar_estudantes(dados_estudantes):
 
 ##########  FUNÇÃO PARA ATUALIZAR ESTUDANTES  ##########
 def atualizar_estudante(dados_estudantes):
-    codigo_att = int(input("Qual o código do estudante que deseja alterar?: "))
-    novo_nome = input("Insira o nome: ")
-    novo_cpf = input("Insira o CPF: ")
-    #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-    for estudante in dados_estudantes:
-    #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
-        if estudante['Código'] == codigo_att:
-            estudante['Nome'] = novo_nome
-            estudante['CPF'] = novo_cpf
-            registra_dados_estudantes(dados_estudantes)
-    
+    while True:
+        try:
+            codigo_att = int(input("Qual o código do estudante que deseja alterar?: "))
+        
+        except:
+            print("Código inválido, insira um vaor numérico")
+            continue
+
+        if valida_cod_estudante(codigo_att, dados_estudantes) == True:
+            novo_nome = input("Insira o nome: ")
+            novo_cpf = input("Insira o CPF: ")
+            #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
+            for estudante in dados_estudantes:
+            #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+                if estudante['Código'] == codigo_att:
+                    estudante['Nome'] = novo_nome
+                    estudante['CPF'] = novo_cpf
+                    registra_dados_estudantes(dados_estudantes)
+                    print("Estudante","*",estudante['Nome'],"*","foi atualizado.")
+      
+        else:
+            print("Este estudante não existe, tente novamente.")
+        break
 
 ##########  FUNÇÃO PARA EXCLUIR ESTUDANTES  ##########
 def excluir_estudante(dados_estudantes):
-    #Percorre a lista de estudantes em busca do código copiado
-    codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
-    for index, estudante in enumerate(dados_estudantes):
-        if estudante['Código'] == codigo_exclusao:
-            dados_estudantes.pop(index)
-            registra_dados_estudantes(dados_estudantes)
-            print("Estudante","*",estudante['Nome'],"*","foi excluido.")
+    while True:
+        try:
+            codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
+        except:
+            print("Este código não existe, tente novamente.")
+        if valida_cod_estudante(codigo_exclusao, dados_estudantes) == True:  
+            for index, estudante in enumerate(dados_estudantes):
+                if estudante['Código'] == codigo_exclusao:
+                    dados_estudantes.pop(index)
+                    registra_dados_estudantes(dados_estudantes)
+                    print("Estudante","*",estudante['Nome'],"*","foi excluido.")
+        else:
+            print("Esse estudante não existe, tente novamente.")
+            continue
+        break
+        
 
 
 ##########  VALIDA ESTUDANTES  ##########
@@ -202,34 +248,52 @@ def listar_professores(dados_professores):
 
 ##########  FUNÇÃO PARA ATUALIZAR PROFESSORES ##########
 def atualizar_professores(dados_professores):
-    codigo_att = int(input("Qual o código do professor que deseja alterar?: "))
-    novo_nome = input("Insira o nome: ")
-    novo_cpf = input("Insira o CPF: ")
-    #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-    for professor in dados_professores:
-    #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
-        if professor['Código'] == codigo_att:
-            professor['Nome'] = novo_nome
-            professor['CPF'] = novo_cpf
-            return dados_professores
+    while True:
+        try:
+            codigo_att = int(input("Qual o código do professor que deseja alterar?: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+            continue
+        if valida_cod_professores(codigo_att, dados_professores) == True:
+            novo_nome = input("Insira o nome: ")
+            novo_cpf = input("Insira o CPF: ")
+            #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
+            for professor in dados_professores:
+            #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+                if professor['Código'] == codigo_att:
+                    professor['Nome'] = novo_nome
+                    professor['CPF'] = novo_cpf
+                    registra_dados_professores(dados_professores)
+                    print("Professor","*",professor['Nome'],"*","foi atualizado.")
+        else:
+            print("Esse professor não existe, tente novamente.")
+            continue
+        break
 
 
 ##########  FUNÇÃO PARA EXCLUIR PROFESSORES  ##########
 def excluir_professores(dados_professores):
-    #Percorre a lista em busca do código copiado
-    codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
-    for index, professor in enumerate(dados_professores):
-        if professor['Código'] == codigo_exclusao:
-            dados_professores.pop(index)
-            registra_dados_professores(dados_professores)
-            print("Professor","*",professor['Nome'],"*","foi excluido.")
-
+    while True:
+        try:
+            codigo_exclusao = int(input("Qual código do estudante que deseja excluir?: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+            continue
+        if valida_cod_professores(codigo_exclusao, dados_professores) == True:
+            for index, professor in enumerate(dados_professores):
+                if professor['Código'] == codigo_exclusao:
+                    dados_professores.pop(index)
+                    registra_dados_professores(dados_professores)
+                    print("Professor","*",professor['Nome'],"*","foi excluido.")
+        else:
+            print("Esse professor não existe, tente novamente.")
+            continue
+        break
 
 ##########  VALIDA PROFESSORES  ##########
 def valida_cod_professores(codigo, dados_professores):
     for professor in dados_professores:
         if codigo == professor['Código']:
-            print("Este código já existe, tente novamente")
             return True
        
 
@@ -247,47 +311,84 @@ def listar_disciplinas(dados_disciplinas):
 
 ##########  ATUALIZA DISCIPLINAS  ##########
 def atualizar_disciplinas(dados_disciplinas):
-    codigo_att = int(input("Qual o código da disciplina que deseja alterar?: "))
-    novo_nome = input("Insira o nome: ")
-    #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-    for disciplina in dados_disciplinas:
-    #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
-        if disciplina['Código'] == codigo_att:
-            disciplina['Nome'] = novo_nome
-            registra_dados_disciplinas(dados_disciplinas)
-
+    while True:
+        try:
+            codigo_att = int(input("Qual o código da disciplina que deseja alterar?: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+        if valida_cod_disciplinas(codigo_att,dados_disciplinas) == True:
+            novo_nome = input("Insira o nome: ")
+            #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
+            for disciplina in dados_disciplinas:
+            #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+                if disciplina['Código'] == codigo_att:
+                    disciplina['Nome'] = novo_nome
+                    registra_dados_disciplinas(dados_disciplinas)
+                    print(f"A disciplina {disciplina['Nome']} foi atualizada.")
+        else:
+            print("Essa disciplina não existe, tente novamente.")
+            continue
+        break
 
 ##########  FUNÇÃO PARA EXCLUIR DISCIPLINAS  ##########
 def excluir_disciplinas(dados_disciplinas):
-    #Percorre a lista em busca do código copiado
-    codigo_exclusao = int(input("Qual código da disciplina que deseja excluir?: "))
-    for index, disciplina in enumerate(dados_disciplinas):
-        if disciplina['Código'] == codigo_exclusao:
-            dados_disciplinas.pop(index)
-            registra_dados_disciplinas(dados_disciplinas)
-            print("Disciplina","*",disciplina['Nome'],"*","foi excluida.")
+    while True:
+        try:
+            codigo_exclusao = int(input("Qual o código da disciplina que deseja excluir: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+        if valida_cod_disciplinas(codigo_exclusao,dados_disciplinas) == True:
+            for index, disciplina in enumerate(dados_disciplinas):
+                if disciplina['Código'] == codigo_exclusao:
+                    dados_disciplinas.pop(index)
+                    registra_dados_disciplinas(dados_disciplinas)
+                    print("Disciplina","*",disciplina['Nome'],"*","foi excluida.")
+        else:
+            print("Essa disciplina não existe, tente novamente.")
+            continue
+        break
 
 
 ##########  VALIDA DISCIPLINAS  ##########
 def valida_cod_disciplinas(codigo, dados_disciplinas):
     for disciplina in dados_disciplinas:
         if codigo == disciplina['Código']:
-            print("Este código já existe, tente novamente")
             return True
         
 
 ########## INSERIR TURMAS ##########
 def insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados_disciplinas):
-    cod_professor = int(input("Insira o código do professor: "))
-    for professor in dados_professores:
-        if professor['Código'] == cod_professor:
-            infoprof = professor
-            
-    cod_disciplina = int(input("Insira o código da disciplina: "))
-    for disciplina in dados_disciplinas:
-        if disciplina['Código'] == cod_disciplina:
-            infodisc = disciplina
-            
+    while True:
+        try:
+            cod_professor = int(input("Insira o código do professor: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_professores(cod_professor, dados_professores) == True:
+            for professor in dados_professores:
+                if professor['Código'] == cod_professor:
+                    infoprof = professor
+            break
+        else:
+            print("Este professor não existe, tente novamente.")
+            continue
+    
+    while True:
+        try:
+            cod_disciplina = int(input("Insira o código da disciplina: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+
+        if valida_cod_disciplinas(cod_disciplina, dados_disciplinas) == True:
+            for disciplina in dados_disciplinas:
+                if disciplina['Código'] == cod_disciplina:
+                    infodisc = disciplina
+            break
+        else:
+            print("Esta disciplina não existe, tente novamente.")
+            continue
+             
     infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
     dados_turmas.append(infoturmas)
 
@@ -306,22 +407,52 @@ def listar_turmas(dados_turmas):
 ########## ATUALIZA TURMAS  ##########
 def atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas):
     dados_disciplinas = carrega_dados_disciplinas()
-    n_turma = int(input("Insira o número da turma que deseja atualizar: "))
-    for index, turma in enumerate(dados_turmas):
-        if n_turma == turma['Turma']:
-            dados_turmas.pop(index)
-            registra_dados_turmas(dados_turmas)
+    while True:  
+        try:
+            n_turma = int(input("Insira o número da turma que deseja atualizar: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+            continue
+        if valida_cod_turmas(n_turma, dados_turmas) == True:
+            for index, turma in enumerate(dados_turmas):
+                if n_turma == turma['Turma']:
+                    dados_turmas.pop(index)
+                    registra_dados_turmas(dados_turmas)
+        
+        else:
+            print("Essa turma não existe, tente novamente.")
+            continue
+        break
     
-    cod_professor = int(input("Insira o código do professor: "))        
-    for professor in dados_professores:
-        if professor['Código'] == cod_professor:
-            infoprof = professor
-            
-    cod_disciplina = int(input("Insira o código da disciplina: "))
-    for disciplina in dados_disciplinas:
-        if disciplina['Código'] == cod_disciplina:
-            infodisc = disciplina
-            
+    while True:
+        try:
+            cod_professor = int(input("Insira o código do professor: "))  
+        except:
+            print("Código inválido, tente novamente.")  
+            continue
+        if valida_cod_professores(cod_professor, dados_professores) == True:
+            for professor in dados_professores:
+                if professor['Código'] == cod_professor:
+                    infoprof = professor
+        else:
+            print("Esse professor não existe, tente novamente.")
+            continue
+        break
+    while True:
+        try:    
+            cod_disciplina = int(input("Insira o código da disciplina: "))
+        except:
+            print("Código inválido, insira um valor numérico.")
+            continue
+        if valida_cod_disciplinas(cod_disciplina, dados_disciplinas) == True:   
+            for disciplina in dados_disciplinas:
+                if disciplina['Código'] == cod_disciplina:
+                    infodisc = disciplina
+        else:
+            print("Essa disciplina não existe, tente novamente.")
+            continue
+        break 
+
     infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
     dados_turmas.append(infoturmas)
     registra_dados_turmas(dados_turmas)
@@ -329,12 +460,23 @@ def atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas):
         
 ##########  EXCLUI TURMAS  #########
 def excluir_turmas(dados_turmas):
-    n_turma = int(input("Insira o número da turma que deseja excluir: "))
-    for turma in dados_turmas:
-        for index, turma in enumerate(dados_turmas):
-            if n_turma == turma['Turma']:
-                dados_turmas.pop(index)
-                registra_dados_turmas(dados_turmas)         
+    while True:
+        try:
+            n_turma = int(input("Insira o número da turma que deseja excluir: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_turmas(n_turma, dados_turmas) == True:
+            for turma in dados_turmas:
+                for index, turma in enumerate(dados_turmas):
+                    if n_turma == turma['Turma']:
+                        dados_turmas.pop(index)
+                        registra_dados_turmas(dados_turmas)
+                        print(f"A turma *{turma}* foi excluída.")
+        else:
+            print("Essa turma não existe, tente novamente.")
+            continue
+                 
             
 
 ##########  VALIDA CODIGO DA TURMA  ##########
@@ -346,15 +488,35 @@ def valida_cod_turmas(n_turma, dados_turmas):
 
 ##########  INSERIR MATRICULAS  ##########
 def insere_estudantes_e_turmas(dados_matriculas,dados_estudantes, dados_turmas, indice_matricula):
-    cod_estudante = int(input("Insira o código do estudante: "))
-    for estudante in dados_estudantes:
-        if estudante['Código'] == cod_estudante:
-            infoestud = estudante
-            
-    cod_turma = int(input("Insira o código da disciplina: "))
-    for turma in dados_turmas:
-        if turma['Turma'] == cod_turma:
-            infoturma = turma
+    while True:
+        try:
+            cod_estudante = int(input("Insira o código do estudante: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_estudante(cod_estudante, dados_estudantes) == True:
+            for estudante in dados_estudantes:
+                if estudante['Código'] == cod_estudante:
+                    infoestud = estudante
+            break
+        else:
+            print("Este estudante não existe, tente novamente.")
+            continue
+    
+    while True:
+        try:
+            cod_turma = int(input("Insira o código da turma: "))
+        except:
+            print("Código inválido, tente novamente.")
+            continue
+        if valida_cod_turmas(cod_turma, dados_turmas) == True:
+            for turma in dados_turmas:
+                if turma['Turma'] == cod_turma:
+                    infoturma = turma
+            break
+        else:
+            print("Esta turma não existe, tente novamente.")
+            continue        
     infomatriculas = {"Matricula":indice_matricula,'':infoturma,"Estudante":infoestud} 
     dados_matriculas.append(infomatriculas)
 
