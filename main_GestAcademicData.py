@@ -65,23 +65,23 @@ def carrega_dados_matriculas():
 ##########  GRAVA DADOS NO ARQUIVO EM ARMAZENAMENTO  ##########
 def registra_dados_estudantes(dados_estudantes):
         with open('dados_estudantes.json','w',encoding='utf8') as f:
-            json.dump(dados_estudantes,f, ensure_ascii=False)
+            json.dump(dados_estudantes,f,indent=4, ensure_ascii=False)
     
 def registra_dados_professores(dados_professores):
         with open('dados_professores.json','w',encoding='utf8') as f:
-            json.dump(dados_professores,f, ensure_ascii=False)
+            json.dump(dados_professores,f,indent=4, ensure_ascii=False)
 
 def registra_dados_disciplinas(dados_disciplinas):
         with open('dados_disciplinas.json','w',encoding='utf8') as f:
-            json.dump(dados_disciplinas,f, ensure_ascii=False)
+            json.dump(dados_disciplinas,f,indent=4, ensure_ascii=False)
 
 def registra_dados_turmas(dados_turmas):
         with open('dados_turmas.json','w',encoding='utf8') as f:
-            json.dump(dados_turmas,f, ensure_ascii=False)
+            json.dump(dados_turmas,f,indent=4, ensure_ascii=False)
 
 def registra_dados_matriculas(dados_matriculas):
         with open('dados_matriculas.json','w',encoding='utf8') as f:
-            json.dump(dados_matriculas,f, ensure_ascii=False)
+            json.dump(dados_matriculas,f,indent=4, ensure_ascii=False)
 
 
 ##########  INSERE DADOS NO ARQUIVO  ##########
@@ -90,6 +90,7 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
         while True:
             codigo = int(input("Insira o código do estudante: "))
             if valida_cod_estudante(codigo, dados_estudantes) == True:
+                print("Este código já existe, tente novamente")
                 continue
             nome = input("Insira o nome do estudante: ") 
             cpf = input("Insira o CPF: ")
@@ -125,6 +126,7 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
         while True:
             n_turma = int(input("Insira o código da turma: "))
             if valida_cod_turmas(n_turma, dados_turmas):
+                print("Este código já existe, tente novamente")
                 continue
             insere_professores_em_turmas(n_turma, dados_turmas, dados_professores, dados_disciplinas)
             
@@ -133,10 +135,8 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
 
     elif op == 5:
         while True:
-            cod_codigo = int(input("Insira o código da turma: "))
-            #valid codigo turma
-            cod_estudante = int(input("Insira o código do estudante: "))
-            valida_cod_estudante()
+            insere_estudantes_e_turmas(dados_matriculas, dados_estudantes, dados_turmas)
+            registra_dados_matriculas(dados_matriculas)
             if input("Deseja inserir outra matrícula(s/n) ") == "n":
                 break
         
@@ -181,7 +181,6 @@ def excluir_estudante(dados_estudantes):
 def valida_cod_estudante(codigo, dados_estudantes):
     for estudante in dados_estudantes:
         if codigo == estudante['Código']:
-            print("Este código já existe, tente novamente")
             return True
 
 
@@ -304,25 +303,24 @@ def listar_turmas(dados_turmas):
 def atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas):
     dados_disciplinas = carrega_dados_disciplinas()
     n_turma = int(input("Insira o número da turma que deseja atualizar: "))
-    for turma in dados_turmas:
-            for index, turma in enumerate(dados_turmas):
-                if n_turma == turma['Turma']:
-                    dados_turmas.pop(index)
-                    registra_dados_turmas(dados_turmas)
-
-            cod_professor = int(input("Insira o código do professor: "))
-            for professor in dados_professores:
-                if professor['Código'] == cod_professor:
-                    infoprof = professor
-            
-            cod_disciplina = int(input("Insira o código da disciplina: "))
-            for disciplina in dados_disciplinas:
-                if disciplina['Código'] == cod_disciplina:
-                    infodisc = disciplina
-            
-            infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
-            dados_turmas.append(infoturmas)
+    for index, turma in enumerate(dados_turmas):
+        if n_turma == turma['Turma']:
+            dados_turmas.pop(index)
             registra_dados_turmas(dados_turmas)
+    
+    cod_professor = int(input("Insira o código do professor: "))        
+    for professor in dados_professores:
+        if professor['Código'] == cod_professor:
+            infoprof = professor
+            
+    cod_disciplina = int(input("Insira o código da disciplina: "))
+    for disciplina in dados_disciplinas:
+        if disciplina['Código'] == cod_disciplina:
+            infodisc = disciplina
+            
+    infoturmas = {"Turma":n_turma,"Professor":infoprof,"Disciplina":infodisc}
+    dados_turmas.append(infoturmas)
+    registra_dados_turmas(dados_turmas)
         
         
 ##########  EXCLUI TURMAS  #########
@@ -334,18 +332,74 @@ def excluir_turmas(dados_turmas):
                 dados_turmas.pop(index)
                 registra_dados_turmas(dados_turmas)         
             
+
 ##########  VALIDA CODIGO DA TURMA  ##########
 def valida_cod_turmas(n_turma, dados_turmas):
     for turma in dados_turmas:
         if n_turma == turma['Turma']:
-            print("Este código já existe, tente novamente")
             return True
+        
 
-##########  AVISO DE DESENVOLVIMENTO  ##########
-def em_desenvolvimento():
-     print("Em desenvolvimento")
+##########  INSERIR MATRICULAS  ##########
+def insere_estudantes_e_turmas(dados_matriculas,dados_estudantes, dados_turmas):
+    indice_matricula = int(input("Insira o número da matrícula: "))
+    cod_estudante = int(input("Insira o código do estudante: "))
+    for estudante in dados_estudantes:
+        if estudante['Código'] == cod_estudante:
+            infoestud = estudante
+            
+    cod_turma = int(input("Insira o código da disciplina: "))
+    for turma in dados_turmas:
+        if turma['Turma'] == cod_turma:
+            infoturma = turma
+    infomatriculas = {"Matricula":indice_matricula,'':infoturma,"Estudante":infoestud} 
+    dados_matriculas.append(infomatriculas)
 
 
+##########  LISTAR MATRICULAS  ##########
+def listar_matriculas(dados_matriculas):
+    if len(dados_matriculas) == 0:
+        print("A lista está vazia")
+
+    else:
+        print('********** LISTA DE MATRICULAS **********')
+        for matricula in dados_matriculas:
+            print(matricula)
+
+
+########## ATUALIZA MATRICULAS ##########
+def atualizar_matriculas(dados_matriculas, dados_estudantes, dados_turmas):
+    n_matricula = int(input("Insira o número da matricula que deseja atualizar: "))
+    for index, matricula in enumerate(dados_matriculas):
+        if n_matricula == matricula['Matricula']:
+            dados_matriculas.pop(index)
+            registra_dados_matriculas(dados_matriculas)
+    
+    cod_estudantes = int(input("Insira o código do estudante: "))        
+    for estudante in dados_estudantes:
+        if estudante['Código'] == cod_estudantes:
+            infoestud = estudante
+            
+    cod_turmas = int(input("Insira o código da turma: "))
+    for turma in dados_turmas:
+        if turma['Turma'] == cod_turmas:
+            infoturma = turma
+            
+    infomatricula = {"Matricula":n_matricula,"Estudante":infoestud,"Turma":infoturma}
+    dados_matriculas.append(infomatricula)
+    registra_dados_matriculas(dados_matriculas)
+
+
+##########  EXCLUI MATRÍCULA  ##########
+def excluir_matriculas(dados_matriculas):
+    n_matricula = int(input("Insira o número da matrícula que deseja excluir: "))
+    for matricula in dados_matriculas:
+        for index, matricula in enumerate(dados_matriculas):
+            if n_matricula == matricula['Matricula']:
+                dados_matriculas.pop(index)
+                registra_dados_matriculas(dados_matriculas)
+                
+                   
 ##########  MENU DE ESTUDANTES  ##########
 def menu_estudantes():
     while True:
@@ -476,6 +530,40 @@ def menu_turmas():
                 print("Opção inválida, tente novamente!")
                 continue
 
+##########  MENU MATRICULAS  ##########
+def menu_matriculas():
+    while True:
+            opcoes_menu_operacoes()
+            retorno_menu = int(input())
+            dados_turmas = carrega_dados_turmas()
+            dados_estudantes = carrega_dados_estudantes()
+
+            if retorno_menu == 1:
+                inserir(op,dados_estudantes, dados_professores, dados_disciplinas, dados_turmas, dados_matriculas)
+                registra_dados_matriculas(dados_matriculas)
+                titulo_menu_matriculas()    
+            
+            elif retorno_menu == 2:
+                listar_matriculas(dados_matriculas)
+                titulo_menu_matriculas()
+                    
+            elif retorno_menu == 3: 
+                titulo_menu_matriculas()
+                atualizar_matriculas(dados_matriculas, dados_estudantes, dados_turmas)
+                
+                
+            elif retorno_menu == 4:
+                titulo_menu_matriculas()
+                excluir_matriculas(dados_matriculas)
+                
+            elif retorno_menu == 5:  
+                break
+
+            else:
+                print("Opção inválida, tente novamente!")
+                continue
+
+
 ##########  OPÇÕES DO MENU DE OPERAÇÕES  ##########
 def opcoes_menu_operacoes():
     print("(1) Incluir.")  
@@ -527,7 +615,7 @@ def menu_principal(op):
 
         elif op == 5:
             titulo_menu_matriculas()
-            em_desenvolvimento()
+            menu_matriculas()
             break
         
         else:
