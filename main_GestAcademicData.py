@@ -61,7 +61,6 @@ def carrega_dados_matriculas():
         return dados_matriculas
 
 
-
 ##########  GRAVA DADOS NO ARQUIVO EM ARMAZENAMENTO  ##########
 def registra_dados_estudantes(dados_estudantes):
         with open('dados_estudantes.json','w',encoding='utf8') as f:
@@ -98,8 +97,12 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
                 continue
             nome = input("Insira o nome do estudante: ") 
             cpf = input("Insira o CPF: ")
-            infoestudante = {"Código":codigo,"Nome":nome,"CPF":cpf}
-            dados_estudantes.append(infoestudante)
+            if validar_cpf(cpf) == True:
+                infoestudante = {"Código":codigo,"Nome":nome,"CPF":cpf}
+                dados_estudantes.append(infoestudante)
+            else:
+                print("CPF inválido, insira o estudante novamente.")
+                continue
             if input("Deseja inserir outro estudante?(s/n): ") == "n":
                 break
 
@@ -115,11 +118,14 @@ def inserir(op,dados_estudantes,dados_professores, dados_disciplinas, dados_turm
                 continue
             nome = input("Insira o nome do professor: ")
             cpf =input("Insira o CPF: ")
-            infoprofessor = {"Código":codigo,"Nome":nome,"CPF":cpf}
-            dados_professores.append(infoprofessor)
-            if input("Deseja inserir outro professor?(s/n) ") == "n":
-                break
-    
+            if validar_cpf(cpf) == True:
+                infoprofessor = {"Código":codigo,"Nome":nome,"CPF":cpf}
+                dados_professores.append(infoprofessor)
+                if input("Deseja inserir outro professor?(s/n) ") == "n":
+                    break
+            else:
+                print("CPF inválido, insira os dados novamente.")
+                continue
     elif op == 3:
         while True:
             try:
@@ -194,15 +200,18 @@ def atualizar_estudante(dados_estudantes):
         if valida_cod_estudante(codigo_att, dados_estudantes) == True:
             novo_nome = input("Insira o nome: ")
             novo_cpf = input("Insira o CPF: ")
+            if validar_cpf(novo_cpf) == True:
             #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-            for estudante in dados_estudantes:
-            #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
-                if estudante['Código'] == codigo_att:
-                    estudante['Nome'] = novo_nome
-                    estudante['CPF'] = novo_cpf
-                    registra_dados_estudantes(dados_estudantes)
-                    print("Estudante","*",estudante['Nome'],"*","foi atualizado.")
-      
+                for estudante in dados_estudantes:
+                #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+                    if estudante['Código'] == codigo_att:
+                        estudante['Nome'] = novo_nome
+                        estudante['CPF'] = novo_cpf
+                        registra_dados_estudantes(dados_estudantes)
+                        print("Estudante","*",estudante['Nome'],"*","foi atualizado.")
+            else:
+                print("CPF inválido, insira os dados novamente.")
+                continue
         else:
             print("Este estudante não existe, tente novamente.")
         break
@@ -226,7 +235,6 @@ def excluir_estudante(dados_estudantes):
         break
         
 
-
 ##########  VALIDA ESTUDANTES  ##########
 def valida_cod_estudante(codigo, dados_estudantes):
     for estudante in dados_estudantes:
@@ -234,6 +242,36 @@ def valida_cod_estudante(codigo, dados_estudantes):
             return True
 
 
+##########  VALIDA CPF  ##########
+def validar_cpf(cpf):
+    # Remova caracteres não numéricos
+    cpf = ''.join(filter(str.isdigit, cpf))
+
+    # Verifique se o CPF tem 11 dígitos
+    if len(cpf) != 11:
+        return False
+
+    # Verifique se todos os dígitos são iguais
+    if cpf == cpf[0] * 11:
+        return False
+
+    # Calcula o primeiro dígito verificador
+    soma = sum(int(cpf[i]) * (10-i) for i in range(9))
+    digito1 = (soma * 10) % 11
+    if digito1 == 10:
+        digito1 = 0
+
+    # Calcula o segundo dígito verificador
+    soma = sum(int(cpf[i]) * (11-i) for i in range(10))
+    digito2 = (soma * 10) % 11
+    if digito2 == 10:
+        digito2 = 0
+
+    # Verifica se os dígitos verificadores estão corretos
+    if cpf[-2:] == str(digito1) + str(digito2):
+        return True
+    else:
+        return False
 
 ##########  FUNÇÃO PARA LISTAGEM DE PROFESSORES  ##########
 def listar_professores(dados_professores):
@@ -257,14 +295,18 @@ def atualizar_professores(dados_professores):
         if valida_cod_professores(codigo_att, dados_professores) == True:
             novo_nome = input("Insira o nome: ")
             novo_cpf = input("Insira o CPF: ")
-            #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
-            for professor in dados_professores:
-            #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
-                if professor['Código'] == codigo_att:
-                    professor['Nome'] = novo_nome
-                    professor['CPF'] = novo_cpf
-                    registra_dados_professores(dados_professores)
-                    print("Professor","*",professor['Nome'],"*","foi atualizado.")
+            if validar_cpf(novo_cpf) == True:
+                #PERCORRE A LISTA PARA ENCONTRAR O CODIGO INFORMADO
+                for professor in dados_professores:
+                #SUBSTITUI AS INFORMAÇÕES RESPECTIVAMENTE
+                    if professor['Código'] == codigo_att:
+                        professor['Nome'] = novo_nome
+                        professor['CPF'] = novo_cpf
+                        registra_dados_professores(dados_professores)
+                        print("Professor","*",professor['Nome'],"*","foi atualizado.")
+            else:
+                print("CPF inválido, insira os dados novamente.")
+                continue
         else:
             print("Esse professor não existe, tente novamente.")
             continue
@@ -473,13 +515,13 @@ def excluir_turmas(dados_turmas):
                     if n_turma == turma['Turma']:
                         dados_turmas.pop(index)
                         registra_dados_turmas(dados_turmas)
-                        print(f"A turma *{turma}* foi excluída.")
+                        print(f"A turma {turma['Turma']} foi excluída.")
         else:
             print("Essa turma não existe, tente novamente.")
             continue
+        break
                  
             
-
 ##########  VALIDA CODIGO DA TURMA  ##########
 def valida_cod_turmas(n_turma, dados_turmas):
     for turma in dados_turmas:
@@ -604,7 +646,7 @@ def excluir_matriculas(dados_matriculas):
                     if n_matricula == matricula['Matricula']:
                         dados_matriculas.pop(index)
                         registra_dados_matriculas(dados_matriculas)
-                        print(f"A Matrícula {matricula} foi excluída.")
+                        print(f"A Matrícula {matricula['Matricula']} foi excluída.")
         else:
             print("Essa matrícula não existe, tente novamente.")
             continue
@@ -735,7 +777,6 @@ def menu_turmas():
                 titulo_menu_turmas()
                 atualizar_turmas(dados_turmas, dados_professores, dados_disciplinas)
                 
-                
             elif retorno_menu == 4:
                 titulo_menu_turmas()
                 excluir_turmas(dados_turmas)
@@ -767,7 +808,6 @@ def menu_matriculas():
             elif retorno_menu == 3: 
                 titulo_menu_matriculas()
                 atualizar_matriculas(dados_matriculas, dados_estudantes, dados_turmas)
-                
                 
             elif retorno_menu == 4:
                 titulo_menu_matriculas()
@@ -861,5 +901,4 @@ while True:
         menu_principal(op)
     else:
         print("Opção inválida")
-        continue
-         
+        continue       
